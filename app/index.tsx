@@ -1,3 +1,4 @@
+import { Link } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -46,7 +47,7 @@ export default function LandingScreen() {
       // $$;
       //
       // grant execute on function public.list_tables() to anon;
-      const { data: tablesData, error: tablesError } = await supabase.rpc<{ table_name: string }>('list_tables');
+      const { data: tablesData, error: tablesError } = await supabase.rpc('list_tables');
 
       if (tablesError) {
         setSupabaseStatus((prev) =>
@@ -54,13 +55,19 @@ export default function LandingScreen() {
             ? `${prev}\n\nTables step: ${tablesError.message}`
             : `Tables step: ${tablesError.message}`,
         );
-      } else if (tablesData) {
-        const names = tablesData.map((t) => t.table_name);
+      } else if (Array.isArray(tablesData)) {
+        const names = (tablesData as Array<{ table_name: string }>).map((t: { table_name: string }) => t.table_name);
         setSupabaseTables(names);
         setSupabaseStatus((prev) =>
           prev
             ? `${prev}\n\nTables step: Loaded ${names.length} tables from the database.`
             : `Tables step: Loaded ${names.length} tables from the database.`,
+        );
+      } else if (tablesData) {
+        setSupabaseStatus((prev) =>
+          prev
+            ? `${prev}\n\nTables step: Unexpected response shape from list_tables().`
+            : 'Tables step: Unexpected response shape from list_tables().',
         );
       }
     } catch (err: unknown) {
@@ -173,6 +180,13 @@ export default function LandingScreen() {
           <ThemedText style={styles.footerText}>
             This page is meant only for development and debugging your Supabase API integration.
           </ThemedText>
+
+          <Link href="/student-list" asChild>
+            <TouchableOpacity style={styles.studentsButton}>
+              <ThemedText style={styles.studentsButtonText}>View students list</ThemedText>
+            </TouchableOpacity>
+          </Link>
+          
         </View>
       </ScrollView>
     </AppBackground>
@@ -285,6 +299,20 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 12,
     color: 'rgba(226, 232, 240, 0.55)',
+  },
+  studentsButton: {
+    marginTop: 12,
+    alignSelf: 'flex-start',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(56, 189, 248, 0.8)',
+    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+  },
+  studentsButtonText: {
+    fontSize: 12,
+    color: '#E0F2FE',
   },
   testButton: {
     paddingHorizontal: 10,
