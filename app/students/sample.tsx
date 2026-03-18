@@ -3,15 +3,6 @@ import { StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
-export default function MontoyaScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <ThemedText style={styles.label}>Student name: Montoya</ThemedText>
-      <ThemedText style={styles.info}>Status: Active</ThemedText>
-    </ThemedView>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 4,
@@ -25,4 +16,15 @@ const styles = StyleSheet.create({
     color: 'rgba(148, 163, 184, 0.95)',
   },
 });
+
+export default function SampleScreen() {
+  return (
+    <ThemedView style={styles.container}>
+      <ThemedText style={styles.label}>Student name: Sample Student</ThemedText>
+      <ThemedText style={styles.info}>Status: Active</ThemedText>
+    </ThemedView>
+  );
+}
+
+
 
